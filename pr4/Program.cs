@@ -73,6 +73,7 @@ namespace pr4
                 Console.WriteLine("Отсортировать книги - 4");
                 Console.WriteLine("Самую дорогая и самая дешёвая книга - 5");
                 Console.WriteLine("Сгруппировать по авторам - 6");
+                Console.WriteLine("Список всех книг - 7");
                 Console.WriteLine("Выйти - 0");
                 Console.Write("Ваш выбор: ");
 
@@ -143,7 +144,7 @@ namespace pr4
                 }
                 else
                 {
-                    Console.WriteLine("Ввод некорректен");
+                    Console.WriteLine("Введите целочисленное значение!");
                 }
             }
         }
@@ -160,7 +161,7 @@ namespace pr4
                 }
                 else
                 {
-                    Console.WriteLine("Ввод некорректен");
+                    Console.WriteLine("Введите число!");
                 }
             }
         }
@@ -168,7 +169,7 @@ namespace pr4
         static Genre CheckEnum(string text)
         {
             while (true)
-            {
+            {   
                 int input = CheckInt(text);
 
                 switch (input)
@@ -180,7 +181,7 @@ namespace pr4
                     case 3:
                         return Genre.Роман;
                     default:
-                        Console.WriteLine("Некорректный ввод!");
+                        Console.WriteLine("Введите цифру от 1 до 3!");
                         break;
                 }
             }
@@ -217,6 +218,9 @@ namespace pr4
 
         static void SearchBook()
         {
+            Console.WriteLine("Поиск по названию - 1");
+            Console.WriteLine("Поиск по автору - 2");
+            Console.WriteLine("Поиск по жанру - 3");
             int input = CheckInt("По какому параметру хотите искать: ");
 
             switch (input)
@@ -225,10 +229,10 @@ namespace pr4
                     SearchByTitle();
                     break;
                 case 2:
-                    //SearchByAuthor();
+                    SearchByAuthor();
                     break;
                 case 3:
-                    //SearchByGenre();
+                    SearchByGenre();
                     break;
                 default:
                     Console.WriteLine("Некорректный ввод!");
@@ -238,9 +242,9 @@ namespace pr4
 
         static void SearchByTitle()
         {
-            string title = CheckString("Введите название: ");
+            string input = CheckString("Введите название: ");
 
-            var foundBooks= books.Where(u => u.Title.Contains(title, StringComparison.OrdinalIgnoreCase)).ToList();
+            var foundBooks = books.Where(x => x.Title.Contains(input, StringComparison.InvariantCultureIgnoreCase)).ToList();
 
             if (foundBooks.Count == 0)
             {
@@ -253,6 +257,36 @@ namespace pr4
                 istit.Print();
                 Console.WriteLine();   
             }
+        }
+
+        static void SearchByAuthor()
+        {
+            string input = CheckString("Введите автора: ");
+
+            var foundAuthors = books.Where(x => x.Author.Split(' ', StringSplitOptions.RemoveEmptyEntries).Any(x => x.Contains(input, StringComparison.InvariantCultureIgnoreCase))).ToList();
+
+            if (foundAuthors.Count == 0)
+            {
+                Console.WriteLine("Книги с таким автором не найдено");
+                return;
+            }
+
+            foreach (var b in foundAuthors)
+            {
+                b.Print();
+            }
+        }
+
+        static void SearchByGenre()
+        {
+            Genre input = CheckEnum("Введите жанр (1 - Фэнтези, 2 - Детектив, 3 - Роман): ");
+
+            var foundGenre = books.Where(x => x.Genre == input);
+
+            foreach (var b in foundGenre)
+            {
+                b.Print();
+            }    
         }
 
         static void PrintBooks()
