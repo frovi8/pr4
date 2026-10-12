@@ -6,42 +6,6 @@ using System.ComponentModel;
 
 namespace pr4
 {
-    enum Genre
-    {
-        Фэнтези,
-        Детектив,
-        Роман
-    }
-    internal class Book
-    {
-        private static int NextId = 1;
-        public int Id { get; private set; }
-        public string Title { get; init; }
-        public string Author { get; init; }
-        public Genre Genre { get; init; }
-        public int Year { get; init; }
-        public decimal Price { get; init; }
-
-        public Book(string title, string author, Genre genre, int year, decimal price)
-        {
-            Id = NextId++;
-            Title = title;
-            Author = author;
-            Genre = genre;
-            Year = year;
-            Price = price;
-        }
-
-        public void Print()
-        {
-            Console.WriteLine($"Id: {Id}");
-            Console.WriteLine($"Название: {Title}");
-            Console.WriteLine($"Автор: {Author}");
-            Console.WriteLine($"Жанр: {Genre}");
-            Console.WriteLine($"Год: {Year}");
-            Console.WriteLine($"Цена: {Price}");
-        }
-    }
     class Program
     {
         static List<Book> books = new List<Book>();
@@ -54,7 +18,7 @@ namespace pr4
 
         static void AddBaseBook()
         {
-            books.Add(new Book("Парампарам", "Иванов", Genre.Фэнтези, 2000, 100));
+            books.Add(new Book("Парампарам", "Толкин", Genre.Фэнтези, 2000, 100));
             books.Add(new Book("Властелин колец", "Толкин", Genre.Фэнтези, 1954, 1200));
             books.Add(new Book("Убийство в Восточном экспрессе", "Агата Кристи", Genre.Детектив, 1934, 450));
             books.Add(new Book("Гордость и предубеждение", "Джейн Остин", Genre.Роман, 1813, 600));
@@ -83,24 +47,38 @@ namespace pr4
                 {
                     case "1":
                         AddBook();
+                        Console.ReadKey();
+                        Console.Clear();
                         break;
                     case "2":
                         DelBook();
+                        Console.ReadKey();
+                        Console.Clear();
                         break;
                     case "3":
                         SearchBook();
+                        Console.ReadKey();
+                        Console.Clear();
                         break;
                     case "4":
                         SortBooks();
+                        Console.ReadKey();
+                        Console.Clear();
                         break;
                     case "5":
                         MaxAndMinBook();
+                        Console.ReadKey();
+                        Console.Clear();
                         break;
                     case "6":
                         GroupByAuthor();
+                        Console.ReadKey();
+                        Console.Clear();
                         break;
                     case "7":
                         PrintBooks();
+                        Console.ReadKey();
+                        Console.Clear();
                         break;
                     case "0":
                         running = false;
@@ -138,13 +116,13 @@ namespace pr4
                 Console.Write(text);
                 string? input = Console.ReadLine();
 
-                if (int.TryParse(input, out int value))
+                if (int.TryParse(input, out int value) && value > 0)
                 {
                     return value;
                 }
                 else
                 {
-                    Console.WriteLine("Введите целочисленное значение!");
+                    Console.WriteLine("Введите целочисленное неотрицательное значение!");
                 }
             }
         }
@@ -155,13 +133,13 @@ namespace pr4
                 Console.Write(text);
                 string? input = Console.ReadLine();
 
-                if (decimal.TryParse(input, out decimal value))
+                if (decimal.TryParse(input, out decimal value) && value > 0)
                 {
                     return value;
                 }
                 else
                 {
-                    Console.WriteLine("Введите число!");
+                    Console.WriteLine("Введите неотрицательное число!");
                 }
             }
         }
@@ -169,7 +147,7 @@ namespace pr4
         static Genre CheckEnum(string text)
         {
             while (true)
-            {   
+            {
                 int input = CheckInt(text);
 
                 switch (input)
@@ -253,9 +231,9 @@ namespace pr4
             }
 
             foreach (var istit in foundBooks)
-            { 
+            {
                 istit.Print();
-                Console.WriteLine();   
+                Console.WriteLine();
             }
         }
 
@@ -286,7 +264,7 @@ namespace pr4
             foreach (var b in foundGenre)
             {
                 b.Print();
-            }    
+            }
         }
 
         static void PrintBooks()
@@ -300,17 +278,46 @@ namespace pr4
 
         static void SortBooks()
         {
+            Console.WriteLine("По названию - 1");
+            Console.WriteLine("По году - 2");
+            Console.WriteLine("Выход - 0");
+            int input = CheckInt("Как сортировать: ");
 
+            switch (input)
+            {
+                case 1:
+                    var sortByTitle = books.OrderBy(u => u.Title);
+                    foreach (var b in sortByTitle) b.Print();
+                    break;
+                case 2:
+                    var sortByYear = books.OrderBy(u => u.Year);
+                    foreach (var b in sortByYear) b.Print();
+                    break;
+                case 0:
+                    break;
+                default:
+                    Console.WriteLine("1 или 2 ток выбор!");
+                    break;
+            }
         }
 
         static void MaxAndMinBook()
         {
+            var min = books.Min(u => u.Price);
+            Console.WriteLine($"Минимальная цена: {min}");
 
+            var max = books.Max(u => u.Price);
+            Console.WriteLine($"Максимальная цена: {max}");
         }
 
         static void GroupByAuthor()
         {
+            var group = books.GroupBy(u => u.Author);
 
+            foreach (var author in group)
+            {
+                Console.WriteLine($"{author.Key} - {author.Count()}");
+            }
         }
     }
 }
